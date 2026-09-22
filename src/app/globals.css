@@ -1,0 +1,197 @@
+@import '@fontsource/poppins/300.css';
+@import '@fontsource/poppins/400.css';
+@import '@fontsource/poppins/500.css';
+@import '@fontsource/poppins/600.css';
+@import '@fontsource/poppins/700.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 150 40% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 150 40% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 150 40% 8%;
+
+    --primary: 143 64% 24%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 143 30% 94%;
+    --secondary-foreground: 143 64% 18%;
+
+    --muted: 143 20% 95%;
+    --muted-foreground: 143 15% 45%;
+
+    --accent: 143 30% 92%;
+    --accent-foreground: 143 64% 18%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 143 20% 88%;
+    --input: 143 20% 88%;
+    --ring: 143 64% 24%;
+
+    --radius: 0.75rem;
+
+    /* Brand palette */
+    --green-950: #052e16;
+    --green-900: #14532d;
+    --green-800: #166534;
+    --green-700: #15803d;
+    --green-600: #16a34a;
+    --green-500: #22c55e;
+    --green-100: #dcfce7;
+    --green-50: #f0fdf4;
+  }
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #f8faf8;
+  color: #052e16;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Clean scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #f0fdf4;
+}
+::-webkit-scrollbar-thumb {
+  background: #86efac;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4ade80;
+}
+
+/* Bento card base */
+.bento-card {
+  background: #ffffff;
+  border: 1px solid #d1fae5;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(5, 46, 22, 0.06), 0 1px 2px rgba(5, 46, 22, 0.04);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.bento-card:hover {
+  box-shadow: 0 4px 12px rgba(5, 46, 22, 0.1), 0 2px 4px rgba(5, 46, 22, 0.06);
+  border-color: #a7f3d0;
+}
+
+.bento-card-green {
+  background: linear-gradient(135deg, #166534 0%, #14532d 100%);
+  border: 1px solid #15803d;
+  border-radius: 16px;
+  color: white;
+  box-shadow: 0 4px 16px rgba(22, 101, 52, 0.25);
+}
+
+.bento-card-light-green {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 1px solid #bbf7d0;
+  border-radius: 16px;
+}
+
+/* Stat number */
+.stat-number {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+/* Status pill */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Progress bar track */
+.progress-track {
+  background: #dcfce7;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.progress-fill-green {
+  background: linear-gradient(90deg, #166534, #16a34a);
+  border-radius: 100px;
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+/* Table styles */
+.ops-table th {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #166534;
+  padding: 10px 12px;
+  border-bottom: 1px solid #d1fae5;
+  background: #f0fdf4;
+}
+
+.ops-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0fdf4;
+  font-size: 12px;
+}
+
+.ops-table tr:hover td {
+  background: #f0fdf4;
+}
+
+/* Badge variants */
+.badge-green {
+  background: #dcfce7;
+  color: #14532d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-red {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.badge-amber {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.badge-blue {
+  background: #dbeafe;
+  color: #1e3a8a;
+  border: 1px solid #93c5fd;
+}
+
+.badge-purple {
+  background: #ede9fe;
+  color: #4c1d95;
+  border: 1px solid #c4b5fd;
+}
