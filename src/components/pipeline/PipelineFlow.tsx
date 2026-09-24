@@ -28,6 +28,7 @@ import {
   FileSpreadsheet
 } from "lucide-react";
 import { RunState } from "@/types";
+import { PASS2_ENABLED, TELEMETRY_MODE } from "@/config/demo";
 
 interface CustomNodeData extends Record<string, unknown> {
   title: string;
@@ -129,6 +130,7 @@ interface PipelineFlowProps {
   pass1Stats?: {
     scoredCount: number;
     totalComplete: number;
+    bands?: { reject: number };
     activeWorkers?: number;
     idleWorkers?: number;
   };
@@ -159,7 +161,7 @@ export default function PipelineFlow({ run, pass1Stats, pass2Stats }: PipelineFl
   const p2Queued = run.p2Queued ?? 0;
 
   // Calculate reject count properly - never negative
-  const rejectCount = Math.max(0, totalTeams - p2Promoted - incompleteTeams);
+  const rejectCount = pass1Stats?.bands?.reject;
 
   const nodes: Node<CustomNodeData>[] = useMemo(
     () => [
@@ -168,8 +170,8 @@ export default function PipelineFlow({ run, pass1Stats, pass2Stats }: PipelineFl
         type: "stageNode",
         position: { x: 380, y: 0 },
         data: {
-          title: "Google Sheets",
-          subtitle: "Hackathon registration spreadsheet",
+          title: "Registration Source",
+          subtitle: "API-provided registration data",
           status: "completed",
           jobs: `${totalTeams} rows detected`,
           runtime: "Live Sync",
@@ -206,7 +208,7 @@ export default function PipelineFlow({ run, pass1Stats, pass2Stats }: PipelineFl
           subtitle: "5-dimension weighted rubric",
           status: p1Completed >= completeTeams && p1Queued === 0 ? "completed" : "running",
           jobs: pass1Stats ? `${pass1Stats.scoredCount} / ${pass1Stats.totalComplete} scored` : `${p1Completed} / ${completeTeams} scored`,
-          workers: pass1Stats?.activeWorkers ?? run.activeWorkers,
+          workers: TELEMETRY_MODE === "static" ? pass1Stats?.activeWorkers ?? run.activeWorkers : undefined,
           runtime: pass1Stats ? (pass1Stats.scoredCount >= pass1Stats.totalComplete ? "Complete" : undefined) : undefined,
         },
       },
@@ -215,10 +217,10 @@ export default function PipelineFlow({ run, pass1Stats, pass2Stats }: PipelineFl
         type: "stageNode",
         position: { x: 120, y: 480 },
         data: {
-          title: "Auto Reject",
+          title: "REJECT",
           subtitle: "Bottom tier terminates at Pass-1",
           status: "completed",
-          jobs: `${rejectCount} teams rejected`,
+          jobs: rejectCount === undefined ? "—" : `${rejectCount} teams rejected`,
           isReject: true,
         },
       },
@@ -227,10 +229,10 @@ export default function PipelineFlow({ run, pass1Stats, pass2Stats }: PipelineFl
         type: "stageNode",
         position: { x: 580, y: 480 },
         data: {
-          title: "Promoted Teams",
+          title: "Pass-2",
           subtitle: "Pass-2 candidate pool",
-          status: "completed",
-          jobs: pass2Stats ? `${pass2Stats.promotedTotal} teams promoted` : p2Promoted > 0 ? `${p2Promoted} teams promoted` : "—",
+          status: PASS2_ENABLED ? "completed" : "idle",
+          jobs: PASS2_ENABLED && pass2Stats ? `${pass2Stats.promotedTotal} teams promoted` : "Not started",
         },
       },
       // 3 Specialist Streams
@@ -353,6 +355,9 @@ export default function PipelineFlow({ run, pass1Stats, pass2Stats }: PipelineFl
     [isFrozen]
   );
 
+  const displayNodes = PASS2_ENABLED ? nodes : nodes.filter((node) => !["theme", "builder", "integrity", "synthesizer", "ranker"].includes(node.id));
+  const displayEdges = PASS2_ENABLED ? edges : edges.filter((edge) => !["theme", "builder", "integrity", "synthesizer", "ranker"].includes(String(edge.source)) && !["theme", "builder", "integrity", "synthesizer", "ranker"].includes(String(edge.target)));
+
   return (
     <div className="h-[750px] w-full rounded-lg border border-gray-200 bg-white overflow-hidden relative shadow-inner">
       <div className="absolute top-3 left-3 z-10 rounded-md border border-gray-200 bg-white/90 p-2.5 text-[11px] font-mono backdrop-blur">
@@ -371,8 +376,8 @@ export default function PipelineFlow({ run, pass1Stats, pass2Stats }: PipelineFl
       </div>
 
       <ReactFlow
-        nodes={nodes}
-        edges={edges}
+        nodes={displayNodes}
+        edges={displayEdges}
         nodeTypes={nodeTypes}
         fitView
         fitViewOptions={{ padding: 0.15 }}

@@ -4,13 +4,17 @@ import React from "react";
 import { DollarSign, AlertTriangle, ShieldCheck, Gauge } from "lucide-react";
 import { RunState } from "@/types";
 import { formatCurrency } from "@/lib/utils";
+import { TELEMETRY_MODE } from "@/config/demo";
 
 interface CostTickerProps {
   run: RunState;
 }
 
 export default function CostTicker({ run }: CostTickerProps) {
-  const percentUsed = Math.round((run.estimatedCost / run.budgetLimit) * 100);
+  if (TELEMETRY_MODE === "hidden") return null;
+  const percentUsed = run.budgetLimit && run.estimatedCost !== undefined
+    ? Math.round((run.estimatedCost / run.budgetLimit) * 100)
+    : 0;
   const isCloseToBudget = percentUsed >= 75;
 
   return (
@@ -43,7 +47,9 @@ export default function CostTicker({ run }: CostTickerProps) {
           </span>
         </div>
         <span className="text-xs text-brand-400">
-          Rem: {formatCurrency(Math.max(0, run.budgetLimit - run.estimatedCost))}
+            Rem: {run.budgetLimit !== undefined && run.estimatedCost !== undefined
+              ? formatCurrency(Math.max(0, run.budgetLimit - run.estimatedCost))
+              : "—"}
         </span>
       </div>
 
@@ -61,12 +67,10 @@ export default function CostTicker({ run }: CostTickerProps) {
         <div className="rounded-xl bg-brand-50 p-2.5 border border-brand-100">
           <span className="text-brand-400 block">Pass-1 (Cheap):</span>
           <span className="font-bold text-brand-900">{formatCurrency(run.p1Cost)}</span>
-          <span className="text-[10px] text-brand-400 block">~$0.04 / complete team</span>
         </div>
         <div className="rounded-xl bg-blue-50 p-2.5 border border-blue-100">
           <span className="text-blue-400 block">Pass-2 (Deep):</span>
           <span className="font-bold text-blue-700">{formatCurrency(run.p2Cost)}</span>
-          <span className="text-[10px] text-blue-400 block">~$0.042 / promoted team</span>
         </div>
       </div>
 

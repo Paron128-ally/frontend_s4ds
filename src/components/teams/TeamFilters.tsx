@@ -110,9 +110,9 @@ export default function TeamFilters() {
             className="rounded border border-gray-300 bg-white px-2 py-1 text-xs text-gray-800 focus:border-blue-500 focus:outline-none"
           >
             <option value="ALL">All Bands</option>
-            <option value="FAST_TRACK">FAST TRACK (~25%)</option>
-            <option value="BORDERLINE">BORDERLINE (~35%)</option>
-            <option value="REJECT">AUTO REJECT (~40%)</option>
+            <option value="FAST_TRACK">FAST TRACK</option>
+            <option value="BORDERLINE">BORDERLINE</option>
+            <option value="REJECT">REJECT</option>
           </select>
         </div>
 

@@ -84,7 +84,7 @@ export default function RunStatusBanner({ run }: RunStatusBannerProps) {
                 {run.p2Completed} / {run.p2Promoted}
               </span>
               <span className="text-brand-400 text-[10px]">
-                ({Math.round((run.p2Completed / run.p2Promoted) * 100)}%)
+                ({run.p2Promoted ? Math.round(((run.p2Completed ?? 0) / run.p2Promoted) * 100) : "—"}%)
               </span>
             </div>
 

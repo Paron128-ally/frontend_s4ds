@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import ApiErrorBanner from "./ApiErrorBanner";
+import ErrorBoundary from "./ErrorBoundary";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -20,7 +21,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <ApiErrorBanner />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto pb-16">{children}</main>
+        <main className="flex-1 overflow-y-auto pb-16"><ErrorBoundary>{children}</ErrorBoundary></main>
       </div>
     </div>
   );

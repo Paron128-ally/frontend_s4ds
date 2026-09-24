@@ -3,12 +3,14 @@
 import React from "react";
 import { Cpu, Zap, Activity } from "lucide-react";
 import { RunState } from "@/types";
+import { TELEMETRY_MODE } from "@/config/demo";
 
 interface WorkerPoolMeterProps {
   run: RunState;
 }
 
 export default function WorkerPoolMeter({ run }: WorkerPoolMeterProps) {
+  if (TELEMETRY_MODE === "hidden") return null;
   const idleWorkers = run.totalWorkers - run.activeWorkers;
   const activePercent = Math.round((run.activeWorkers / run.totalWorkers) * 100);
 
@@ -44,21 +46,11 @@ export default function WorkerPoolMeter({ run }: WorkerPoolMeterProps) {
             {idleWorkers} Idle
           </span>
           <span className="text-amber-600 font-medium">
-            Queue: {run.p1Queued + run.p2Queued} tasks
+            Queue: {run.p1Queued + (run.p2Queued ?? 0)} tasks
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 text-[11px] border-t border-brand-100 pt-3">
-        <div className="rounded-xl bg-brand-50 p-2.5 border border-brand-100">
-          <span className="text-brand-400 block">P1 Cheap Scorer:</span>
-          <span className="font-bold text-brand-900">28 workers assigned</span>
-        </div>
-        <div className="rounded-xl bg-blue-50 p-2.5 border border-blue-100">
-          <span className="text-blue-400 block">P2 Deep Reviewers:</span>
-          <span className="font-bold text-blue-700">14 workers assigned</span>
-        </div>
-      </div>
     </div>
   );
 }

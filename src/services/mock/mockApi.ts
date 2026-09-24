@@ -139,7 +139,7 @@ export const mockApi: ApiClient = {
       remainingCount: totalComplete - scoredTeams.length,
       activeWorkers: currentRunState.activeWorkers,
       idleWorkers: currentRunState.totalWorkers - currentRunState.activeWorkers,
-      estimatedCost: currentRunState.p1Cost,
+      estimatedCost: currentRunState.p1Cost ?? 0,
       meanScore,
       medianScore,
       bands: {
@@ -160,13 +160,13 @@ export const mockApi: ApiClient = {
 
   async getPass2Stats() {
     await delay(SIMULATED_LATENCY_MS);
-    const promotedTotal = currentRunState.p2Promoted;
+    const promotedTotal = currentRunState.p2Promoted ?? 0;
     return {
       promotedTotal,
-      completed: currentRunState.p2Completed,
-      running: currentRunState.p2Running,
-      queued: currentRunState.p2Queued,
-      estimatedCost: currentRunState.p2Cost,
+      completed: currentRunState.p2Completed ?? 0,
+      running: currentRunState.p2Running ?? 0,
+      queued: currentRunState.p2Queued ?? 0,
+      estimatedCost: currentRunState.p2Cost ?? 0,
       streams: {
         themeCritic: { completed: 135, total: promotedTotal, percentage: 94 },
         builderCritic: { completed: 128, total: promotedTotal, percentage: 89 },

@@ -11,7 +11,8 @@ import { useRun } from "@/hooks/useRuns";
 import { useTeams } from "@/hooks/useTeams";
 import { usePass1Stats } from "@/hooks/useScores";
 import { useDisputes } from "@/hooks/useDisputes";
-import { formatCurrency, formatDuration, formatUtcTime, cn } from "@/lib/utils";
+import { formatCurrency, formatUtcTime, formatPercent, cn } from "@/lib/utils";
+import { TELEMETRY_MODE } from "@/config/demo";
 import type { Pass1Stats, RunState, Team } from "@/types";
 import BandChart from "@/components/scores/BandChart";
 
@@ -71,13 +72,12 @@ function StageFunnel({ teams, run }: { teams: Team[]; run?: RunState }) {
   const total = teams.length;
   const ingested = total;
   const pass1 = teams.filter(t => t.pass1 !== undefined).length;
-  const pass2 = teams.filter(t => t.pass2Score !== undefined).length;
   
   const teamFinalShortlistCount = teams.filter((team) => team.finalRank !== undefined).length;
   const stages = [
     { label: "Registered", count: ingested, icon: Users, href: "/ingest" },
     { label: "Pass-1 Scored", count: pass1, icon: Activity, href: "/pass1" },
-    { label: "Pass-2 Candidates", count: run?.p2Promoted ?? 0, icon: CheckCircle2, href: "/pass2" },
+    { label: "Pass-2 Eligible", count: teams.filter(t => t.pass1?.band === "FAST_TRACK" || t.pass1?.band === "BORDERLINE").length, icon: CheckCircle2, href: "/pass2" },
     { label: "Final Shortlist", count: teamFinalShortlistCount, icon: Lock, href: "/freeze" },
   ];
 
@@ -86,7 +86,7 @@ function StageFunnel({ teams, run }: { teams: Team[]; run?: RunState }) {
       <h3 className="text-sm font-semibold text-brand-900 mb-4">Pipeline Funnel</h3>
       <div className="space-y-3">
         {stages.map((s, i) => {
-          const pct = Math.round((s.count / ingested) * 100);
+          const pct = formatPercent(s.count, ingested);
           return (
             <Link key={i} href={s.href} className="block group">
               <div className="flex items-center justify-between mb-1">
@@ -96,13 +96,13 @@ function StageFunnel({ teams, run }: { teams: Team[]; run?: RunState }) {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-semibold text-brand-900">{s.count}</span>
-                  <span className="text-[10px] text-brand-400">{pct}%</span>
+                  <span className="text-[10px] text-brand-400">{pct}</span>
                 </div>
               </div>
               <div className="h-2 rounded-full bg-brand-100 overflow-hidden">
                 <div
                   className="h-2 rounded-full bg-gradient-to-r from-brand-700 to-brand-500 transition-all duration-700"
-                  style={{ width: `${pct}%` }}
+                  style={{ width: `${pct === "—" ? 0 : Number.parseInt(pct, 10)}%` }}
                 />
               </div>
             </Link>
@@ -114,11 +114,12 @@ function StageFunnel({ teams, run }: { teams: Team[]; run?: RunState }) {
 }
 
 function BudgetCard({ run }: { run?: RunState }) {
-  const spent = run?.estimatedCost ?? 0;
-  const budget = run?.budgetLimit ?? 0;
-  const pct = budget > 0 ? Math.round((spent / budget) * 100) : 0;
+  const spent = run?.estimatedCost;
+  const budget = run?.budgetLimit;
+  const pct = budget && spent !== undefined ? Math.round((spent / budget) * 100) : 0;
   const overBudget = pct >= 100;
 
+  if (TELEMETRY_MODE === "hidden") return null;
   return (
     <div className={cn("bento-card p-5", overBudget && "border-red-200 bg-red-50")}>
       <div className="flex items-center justify-between mb-1">
@@ -144,10 +145,11 @@ function BudgetCard({ run }: { run?: RunState }) {
 }
 
 function WorkerCard({ run }: { run?: RunState }) {
-  const active = run?.activeWorkers ?? 0;
-  const total = run?.totalWorkers ?? 0;
-  const idle = total - active;
+  const active = run?.activeWorkers;
+  const total = run?.totalWorkers;
+  const idle = active !== undefined && total !== undefined ? total - active : undefined;
 
+  if (TELEMETRY_MODE === "hidden") return null;
   return (
     <div className="bento-card p-5">
       <div className="flex items-center gap-2 mb-2">
@@ -155,23 +157,23 @@ function WorkerCard({ run }: { run?: RunState }) {
         <span className="text-xs font-semibold text-brand-700">Worker Pool</span>
       </div>
       <div className="flex items-end gap-1.5 mt-2 mb-3">
-        <span className="text-2xl font-bold text-brand-950">{active}</span>
-        <span className="text-sm text-brand-400 mb-0.5">/ {total} workers</span>
+        <span className="text-2xl font-bold text-brand-950">{active ?? "—"}</span>
+        <span className="text-sm text-brand-400 mb-0.5">/ {total ?? "—"} workers</span>
       </div>
       <div className="flex gap-1">
-        {Array.from({ length: total }).map((_, i) => (
+        {Array.from({ length: total ?? 0 }).map((_, i) => (
           <div
             key={i}
             className={cn(
               "h-5 flex-1 rounded-sm",
-              i < active ? "bg-brand-600" : "bg-brand-100"
+              active !== undefined && i < active ? "bg-brand-600" : "bg-brand-100"
             )}
           />
         ))}
       </div>
       <div className="flex justify-between text-[10px] mt-1.5">
-        <span className="text-brand-500">{active} active</span>
-        <span className="text-brand-300">{idle} idle</span>
+        <span className="text-brand-500">{active ?? "—"} active</span>
+        <span className="text-brand-300">{idle ?? "—"} idle</span>
       </div>
     </div>
   );
@@ -223,11 +225,9 @@ export default function DashboardPage() {
   const { data: stats } = usePass1Stats();
   const { data: disputeItems } = useDisputes();
 
-  const elapsed = run ? formatDuration(run.elapsedSeconds) : "—";
   const isFrozen = run?.status === "FROZEN";
   const isRunning = run?.status === "RUNNING";
 
-  const pass2Candidates = run?.p2Promoted ?? 0;
   const finalShortlistTarget = run?.shortlistSize ?? 0;
   const finalShortlistCount = teams.filter((team) => team.finalRank !== undefined).length;
   const pendingDisputes = disputeItems?.filter(d => d.status === "PENDING").length;
@@ -248,13 +248,11 @@ export default function DashboardPage() {
               </span>
             ) : isFrozen ? (
               <span className="text-xs font-semibold text-purple-200 bg-white/10 rounded-full px-3 py-1">❄ FROZEN</span>
-            ) : (
-              <span className="text-xs font-semibold text-green-200 bg-white/10 rounded-full px-3 py-1">IDLE</span>
-            )}
+            ) : run?.status ? <span className="text-xs font-semibold text-green-200 bg-white/10 rounded-full px-3 py-1">{run.status}</span> : null}
           </div>
           <h1 className="text-xl font-bold text-white tracking-tight">KnowCode 4.0 — Evaluation Console</h1>
           <p className="text-green-200 text-xs mt-0.5">
-            Run #{run?.id ?? "—"} · Started {formatUtcTime(run?.startedAt)} · {elapsed} elapsed
+            Run #{run?.id ?? "—"} · Started {formatUtcTime(run?.startedAt)}
           </p>
         </div>
         <div className="flex gap-3 flex-wrap">
@@ -278,7 +276,7 @@ export default function DashboardPage() {
           <MetricBlock label="Pass-1 Progress" value={`${stats ? stats.scoredCount : "—"}`} sub={`of ${stats ? stats.totalComplete : "—"} complete`} green />
         </div>
         <div className="col-span-12 sm:col-span-6 lg:col-span-3">
-          <MetricBlock label="Pass-2 Candidates" value={`${pass2Candidates}`} sub={`${run?.p2Running ?? 0} running · ${run?.p2Queued ?? 0} queued`} />
+          <MetricBlock label="Pass-2 Eligible" value={`${teams.filter(t => t.pass1?.band === "FAST_TRACK" || t.pass1?.band === "BORDERLINE").length}`} sub="FAST TRACK + BORDERLINE" />
         </div>
         <div className="col-span-12 sm:col-span-6 lg:col-span-3">
           <MetricBlock label="Final Shortlist Target" value={`${finalShortlistTarget || "—"}`} sub={`${finalShortlistCount} in final shortlist`} />
@@ -295,7 +293,7 @@ export default function DashboardPage() {
           <ActivityFeed activity={stats?.recentActivity} />
         </div>
         <div className="col-span-12 sm:col-span-6 lg:col-span-3">
-          <WorkerCard run={run} />
+          {TELEMETRY_MODE === "static" && <WorkerCard run={run} />}
         </div>
 
         {/* Row 3: Band dist + Budget */}
@@ -303,7 +301,7 @@ export default function DashboardPage() {
           <BandSummaryCard stats={stats} incomplete={run?.incompleteTeams} />
         </div>
         <div className="col-span-12 sm:col-span-6 lg:col-span-3">
-          <BudgetCard run={run} />
+          {TELEMETRY_MODE === "static" && <BudgetCard run={run} />}
         </div>
 
         {/* Row 4: Score histogram - full width */}

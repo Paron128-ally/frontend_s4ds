@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useSyncExternalStore } from "react";
 import { AlertTriangle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiError } from "@/services/http";
@@ -12,30 +12,27 @@ import { ApiError } from "@/services/http";
  */
 export default function ApiErrorBanner() {
   const queryClient = useQueryClient();
-  const [message, setMessage] = useState<string | null>(null);
+  const cache = queryClient.getQueryCache();
 
-  useEffect(() => {
-    const cache = queryClient.getQueryCache();
+  const getMessage = () => {
+    const failed = cache.findAll({ predicate: (q) => q.state.status === "error" });
+    if (failed.length === 0) return null;
 
-    const update = () => {
-      const failed = cache.findAll({ predicate: (q) => q.state.status === "error" });
-      if (failed.length === 0) return setMessage(null);
+    const error = failed[0].state.error;
+    return error instanceof ApiError
+      ? error.status === 0
+        ? error.message
+        : `${error.status} — ${error.message}`
+      : error instanceof Error
+        ? error.message
+        : "Unknown error";
+  };
 
-      const error = failed[0].state.error;
-      const detail =
-        error instanceof ApiError
-          ? error.status === 0
-            ? error.message
-            : `${error.status} — ${error.message}`
-          : error instanceof Error
-            ? error.message
-            : "Unknown error";
-      setMessage(detail);
-    };
-
-    update();
-    return cache.subscribe(update);
-  }, [queryClient]);
+  const message = useSyncExternalStore(
+    (onStoreChange) => cache.subscribe(onStoreChange),
+    getMessage,
+    () => null
+  );
 
   if (!message) return null;
 

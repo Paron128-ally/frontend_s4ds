@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Clock, Cpu, DollarSign, AlertTriangle } from "lucide-react";
 import { useRun } from "@/hooks/useRuns";
 import { useUIStore } from "@/store/uiStore";
 import { formatCurrency, formatDuration } from "@/lib/utils";
 import { UserRole } from "@/types";
+import { TELEMETRY_MODE } from "@/config/demo";
 
 export default function Header() {
   const { data: run } = useRun();
@@ -14,6 +15,16 @@ export default function Header() {
 
   const isFrozen = run?.status === "FROZEN";
   const isRunning = run?.status === "RUNNING";
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (!run?.startedAt) return;
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [run?.startedAt]);
+
+  const startedAt = run?.startedAt ? new Date(run.startedAt).getTime() : NaN;
+  const elapsed = Number.isFinite(startedAt) ? formatDuration(Math.max(0, Math.floor((now - startedAt) / 1000))) : null;
 
   return (
     <header className="sticky top-0 z-40 flex h-14 w-full items-center justify-between border-b border-brand-100 bg-white/95 px-5 backdrop-blur supports-[backdrop-filter]:bg-white/80 shadow-sm">
@@ -44,37 +55,22 @@ export default function Header() {
               </span>
               RUN ACTIVE
             </div>
-          ) : (
+          ) : run?.status ? (
             <div className="status-pill bg-gray-100 text-gray-600 border border-gray-200">
-              {run?.status || "IDLE"}
+              {run.status}
             </div>
-          )}
+          ) : null}
         </div>
       </div>
 
       {/* Center telemetry */}
       <div className="hidden lg:flex items-center gap-6 text-xs text-brand-700">
-        <div className="flex items-center gap-1.5">
-          <Clock className="h-3.5 w-3.5 text-brand-500" />
-          <span className="text-brand-400">Elapsed</span>
-          <span className="font-semibold text-brand-900">{run ? formatDuration(run.elapsedSeconds) : "—"}</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <Cpu className="h-3.5 w-3.5 text-brand-500" />
-          <span className="text-brand-400">Workers</span>
-          <span className="font-semibold text-brand-900">{run ? `${run.activeWorkers}/${run.totalWorkers}` : "—"}</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <DollarSign className="h-3.5 w-3.5 text-brand-500" />
-          <span className="text-brand-400">Cost</span>
-          <span className="font-semibold text-brand-900">{run ? formatCurrency(run.estimatedCost) : "—"}</span>
-          <span className="text-brand-300 text-[10px]">/ {run ? formatCurrency(run.budgetLimit) : "—"}</span>
-        </div>
-        {run?.isBudgetKillSwitchTriggered && (
-          <div className="flex items-center gap-1 text-red-600 font-semibold text-xs animate-pulse">
-            <AlertTriangle className="h-3.5 w-3.5" /> Budget Limit
-          </div>
-        )}
+        {elapsed && <div className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-brand-500" /><span className="text-brand-400">Elapsed</span><span className="font-semibold text-brand-900">{elapsed}</span></div>}
+        {TELEMETRY_MODE === "static" && <>
+          <div className="flex items-center gap-1.5"><Cpu className="h-3.5 w-3.5 text-brand-500" /><span className="text-brand-400">Workers</span><span className="font-semibold text-brand-900">{run?.activeWorkers ?? "—"}/{run?.totalWorkers ?? "—"}</span></div>
+          <div className="flex items-center gap-1.5"><DollarSign className="h-3.5 w-3.5 text-brand-500" /><span className="text-brand-400">Cost</span><span className="font-semibold text-brand-900">{formatCurrency(run?.estimatedCost)}</span><span className="text-brand-300 text-[10px]">/ {formatCurrency(run?.budgetLimit)}</span></div>
+          {run?.isBudgetKillSwitchTriggered === true && <div className="flex items-center gap-1 text-red-600 font-semibold text-xs animate-pulse"><AlertTriangle className="h-3.5 w-3.5" /> Budget Limit</div>}
+        </>}
       </div>
 
       {/* Role + User */}
@@ -93,11 +89,8 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2 border-l border-brand-100 pl-3">
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-800 text-white text-xs font-bold">J</div>
-          <div className="hidden md:block">
-            <div className="text-xs font-semibold text-brand-900">Jane Doe</div>
-            <div className="text-[10px] text-brand-400 uppercase tracking-wider">{userRole}</div>
-          </div>
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-100 text-brand-700 text-xs font-bold">{userRole.slice(0, 1).toUpperCase()}</div>
+          <div className="hidden md:block text-[10px] text-brand-400 uppercase tracking-wider">{userRole}</div>
         </div>
       </div>
     </header>

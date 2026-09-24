@@ -5,7 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatCurrency(amount: number): string {
+export function formatCurrency(amount?: number): string {
+  if (amount === undefined || !Number.isFinite(amount)) return "—";
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -30,6 +31,11 @@ export function formatDuration(seconds: number): string {
 export function formatScore(score?: number): string {
   if (score === undefined || score === null || isNaN(score)) return "—";
   return score.toFixed(1);
+}
+
+export function formatPercent(n?: number, d?: number): string {
+  if (n === undefined || d === undefined || d === 0 || !Number.isFinite(n) || !Number.isFinite(d)) return "—";
+  return `${Math.round((n / d) * 100)}%`;
 }
 
 /** "2026-09-20T07:15:00Z" -> "07:15 UTC" (returns "—" for missing or invalid input). */
