@@ -29,7 +29,7 @@ export default function OverrideForm({ team, onSuccess }: OverrideFormProps) {
     currentScore !== undefined ? currentScore.toString() : ""
   );
   const [auditorNote, setAuditorNote] = useState<string>("");
-  const [auditorId, setAuditorId] = useState<string>("auditor-jane-doe");
+  const [auditorId, setAuditorId] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 

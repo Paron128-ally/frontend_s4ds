@@ -153,7 +153,7 @@ export default function TeamDetailPage() {
               </div>
               <div className="text-[11px] text-purple-200/90 leading-relaxed font-sans">
                 Override Score: <strong>{team.overrideScore} / 10</strong> by{" "}
-                <strong>{team.auditorId || "auditor-ops"}</strong>. Note: &quot;{team.auditorNote}&quot;
+                <strong>{team.auditorId ?? "—"}</strong>. Note: &quot;{team.auditorNote ?? "—"}&quot;
               </div>
             </div>
           )}

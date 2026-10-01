@@ -40,7 +40,7 @@ export default function FreezeConfirm({ shortlistSize }: FreezeConfirmProps) {
   const { userRole } = useUIStore();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [auditorId, setAuditorId] = useState("auditor-lead-ops");
+  const [auditorId, setAuditorId] = useState("");
   const [confirmedCheck, setConfirmedCheck] = useState(false);
 
   const isFrozen = freezeData?.isFrozen;

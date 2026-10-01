@@ -1,20 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { AlertCircle, ArrowRight, CheckCircle2, ChevronDown, ChevronUp, ShieldCheck } from "lucide-react";
 import { DisputeItem, Team } from "@/types";
-import OverrideForm from "../freeze/OverrideForm";
-import { useTeam } from "@/hooks/useTeams";
 
 interface DisputePacketProps {
   dispute: DisputeItem;
 }
 
 export default function DisputePacket({ dispute }: DisputePacketProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const { data: team } = useTeam(dispute.teamId);
-
   const isResolved = dispute.status === "RESOLVED";
 
   return (
@@ -76,21 +71,9 @@ export default function DisputePacket({ dispute }: DisputePacketProps) {
           <ArrowRight className="h-3.5 w-3.5" />
         </Link>
 
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center gap-1 text-xs font-mono text-gray-700 hover:text-gray-950 rounded border border-gray-300 bg-gray-50 px-3 py-1.5"
-        >
-          <span>{isExpanded ? "Hide Override Panel" : "Auditor Override"}</span>
-          {isExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-        </button>
       </div>
 
       {/* Expandable Override Form */}
-      {isExpanded && team && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
-          <OverrideForm team={team} onSuccess={() => setIsExpanded(false)} />
-        </div>
-      )}
     </div>
   );
 }

@@ -32,10 +32,9 @@ export default function BandChart({ bands = defaultBands, scoreBuckets }: BandCh
 
   const bandData = [
     {
-      name: "AUTO REJECT",
+      name: "REJECT",
       count: bands.reject,
       percentage: `${rejectPct}%`,
-      approx: "~40% Funnel Cut",
       color: "#ef4444",
       action: "Terminates at Pass-1",
     },
@@ -43,7 +42,6 @@ export default function BandChart({ bands = defaultBands, scoreBuckets }: BandCh
       name: "BORDERLINE",
       count: bands.borderline,
       percentage: `${borderlinePct}%`,
-      approx: "~35% Promoted",
       color: "#f59e0b",
       action: "Promoted to Pass-2",
     },
@@ -51,7 +49,6 @@ export default function BandChart({ bands = defaultBands, scoreBuckets }: BandCh
       name: "FAST TRACK",
       count: bands.fastTrack,
       percentage: `${fastTrackPct}%`,
-      approx: "~25% Promoted",
       color: "#166534",
       action: "Promoted to Pass-2",
     },
@@ -151,7 +148,7 @@ export default function BandChart({ bands = defaultBands, scoreBuckets }: BandCh
                   />
                   <div>
                     <span className="text-xs font-semibold text-brand-900 block">{b.name}</span>
-                    <span className="text-[10px] text-brand-400">{b.approx} • {b.action}</span>
+                    <span className="text-[10px] text-brand-400">{b.action}</span>
                   </div>
                 </div>
                 <div className="text-right">

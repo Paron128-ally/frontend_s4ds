@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { GitFork, ArrowRight, Activity, Layers, RotateCw } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import PageContainer from "@/components/layout/PageContainer";
 import PipelineFlow from "@/components/pipeline/PipelineFlow";
 import { useRun } from "@/hooks/useRuns";
@@ -32,7 +32,7 @@ export default function PipelinePage() {
       description="Real-time DAG visualization of the staged shortlisting architecture. Displays async worker allocation, queue depths, and node convergence states."
       badge={
         <span className="rounded bg-teal-950/70 px-2.5 py-0.5 text-xs font-mono text-teal-300 border border-teal-800/60 font-bold">
-          React Flow • 13 Pipeline Stages
+          Pass-1 pipeline
         </span>
       }
       actions={
@@ -53,7 +53,7 @@ export default function PipelinePage() {
         <div className="rounded-lg border border-gray-200 bg-white p-4 font-mono text-xs text-gray-500 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="flex items-center gap-4">
             <span className="text-gray-800 font-bold">Staged Funnel Rule:</span>
-            <span>Pass-1 scores 100% of complete teams. Pass-2 runs only for promoted teams (~60%).</span>
+            <span>Pass-1 scores complete teams. Pass-2: Not started.</span>
           </div>
           <div className="text-[11px] text-gray-400">
             Scroll to zoom • Click and drag canvas to pan • Click nodes to inspect stage telemetry

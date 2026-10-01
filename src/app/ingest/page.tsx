@@ -45,11 +45,11 @@ export default function IngestPage() {
 
   // Type guards for IncompleteItem
   const getTrack = (item: IncompleteItem): string => {
-    return "track" in item ? item.track : "new_idea";
+    return "track" in item ? item.track : "—";
   };
 
   const getReasons = (item: IncompleteItem): string[] => {
-    return "reasons" in item ? item.reasons : (item.incompleteReasons ?? ["Missing required fields"]);
+    return "reasons" in item ? item.reasons : (item.incompleteReasons ?? []);
   };
 
   const getUpdatedAt = (item: IncompleteItem): string | undefined => {
@@ -100,16 +100,16 @@ export default function IngestPage() {
       <div className="flex flex-wrap gap-3">
         <Button
           variant="outline"
-          onClick={() => handleIngest(true)}
-          disabled={ingestMutation.isPending}
+          disabled
+          title="Not available in this build"
           className="flex items-center gap-2"
         >
           <RotateCw className={cn("h-4 w-4", ingestMutation.isPending && "animate-spin")} />
           <span>Dry Run / Validate</span>
         </Button>
         <Button
-          onClick={() => handleIngest(false)}
-          disabled={ingestMutation.isPending}
+          disabled
+          title="Not available in this build"
           className="flex items-center gap-2"
         >
           <Play className={cn("h-4 w-4", ingestMutation.isPending && "animate-spin")} />

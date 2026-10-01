@@ -3,6 +3,7 @@
 import React from "react";
 import { CheckCircle2, Clock, Play, ArrowRight } from "lucide-react";
 import { RunState } from "@/types";
+import { PASS2_ENABLED } from "@/config/demo";
 
 interface StageProgressProps {
   run: RunState;
@@ -10,8 +11,10 @@ interface StageProgressProps {
 
 export default function StageProgress({ run }: StageProgressProps) {
   const p1Percent = Math.round((run.p1Completed / run.completeTeams) * 100);
-  const p2Percent = Math.round((run.p2Completed / run.p2Promoted) * 100);
-  const rankingPercent = run.p2Completed > 0 ? Math.round((run.p2Completed / run.p2Promoted) * 45) : 0;
+  const p2Percent = run.p2Promoted ? Math.round(((run.p2Completed ?? 0) / run.p2Promoted) * 100) : 0;
+  const rankingPercent = run.p2Completed && run.p2Promoted
+    ? Math.round((run.p2Completed / run.p2Promoted) * 45)
+    : 0;
 
   const stages = [
     {
@@ -37,9 +40,9 @@ export default function StageProgress({ run }: StageProgressProps) {
     {
       id: "pass2",
       name: "3. Pass-2 Deep Review (Promoted Only)",
-      percentage: p2Percent,
-      detail: `${run.p2Completed} / ${run.p2Promoted} deep reviewed (${run.p2Running} running, ${run.p2Queued} queued)`,
-      status: run.p2Completed === run.p2Promoted ? "COMPLETED" : "RUNNING",
+      percentage: PASS2_ENABLED ? p2Percent : 0,
+      detail: PASS2_ENABLED ? `${run.p2Completed ?? "—"} / ${run.p2Promoted ?? "—"} deep reviewed` : "Not started",
+      status: PASS2_ENABLED && run.p2Completed === run.p2Promoted ? "COMPLETED" : "NOT STARTED",
       statusColor: "text-indigo-700 bg-indigo-50 border-indigo-200",
       barColor: "bg-indigo-500",
     },
@@ -63,7 +66,7 @@ export default function StageProgress({ run }: StageProgressProps) {
           Pipeline Staged Funnel Progress
         </h3>
         <span className="text-[11px] text-brand-400">
-          Auto-reject: ~40% • Promoted to Pass-2: ~60%
+          Pass-2: Not started
         </span>
       </div>
 
