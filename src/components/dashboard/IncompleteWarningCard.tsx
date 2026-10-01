@@ -28,14 +28,14 @@ export default function IncompleteWarningCard({ count }: IncompleteWarningCardPr
               </span>
             </div>
             <p className="text-xs text-amber-700/80 mt-1 max-w-2xl leading-relaxed">
-              These candidate teams are strictly excluded from Pass-1 scoring and shortlist ranking because mandatory registration data (repository link, architecture scope, or member roster) was missing.
+              These candidate teams are strictly excluded from Round 1 scoring and ranking because mandatory registration data (repository link, architecture scope, or member roster) was missing.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
           <Link
-            href="/ingest"
+            href="/create"
             className="inline-flex items-center gap-1.5 rounded-xl border border-amber-300 bg-amber-100 hover:bg-amber-200 px-3 py-1.5 text-xs font-semibold text-amber-800 transition-colors"
           >
             <span>View Incomplete Teams</span>

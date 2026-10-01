@@ -65,11 +65,11 @@ export default function CostTicker({ run }: CostTickerProps) {
 
       <div className="grid grid-cols-2 gap-2 text-[11px] border-t border-brand-100 pt-3">
         <div className="rounded-xl bg-brand-50 p-2.5 border border-brand-100">
-          <span className="text-brand-400 block">Pass-1 (Cheap):</span>
+          <span className="text-brand-400 block">Round 1:</span>
           <span className="font-bold text-brand-900">{formatCurrency(run.p1Cost)}</span>
         </div>
         <div className="rounded-xl bg-blue-50 p-2.5 border border-blue-100">
-          <span className="text-blue-400 block">Pass-2 (Deep):</span>
+          <span className="text-blue-400 block">Round 2:</span>
           <span className="font-bold text-blue-700">{formatCurrency(run.p2Cost)}</span>
         </div>
       </div>

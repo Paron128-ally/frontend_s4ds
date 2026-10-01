@@ -1,20 +1,31 @@
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/services";
-import { PASS2_ENABLED } from "@/config/demo";
+import { derivePass1Stats, derivePass2Stats } from "@/lib/api-mappers";
+import { useRun } from "./useRuns";
+import { useCohort } from "./useTeams";
 
 export function usePass1Stats() {
-  return useQuery({
-    queryKey: ["pass1Stats"],
-    queryFn: () => api.getPass1Stats(),
-    refetchInterval: 5000,
-  });
+  const cohort = useCohort();
+  const run = useRun();
+  const progress = run.data
+    ? {
+        run_id: run.data.id,
+        status: run.data.status,
+        phase: run.data.currentStage,
+        total: run.data.totalTeams,
+        scored: run.data.p1Completed,
+        failed: run.data.incompleteTeams,
+      }
+    : undefined;
+  return {
+    ...cohort,
+    data: cohort.data ? derivePass1Stats(cohort.data, progress) : undefined,
+    isLoading: cohort.isLoading || run.isLoading,
+  };
 }
 
 export function usePass2Stats() {
-  return useQuery({
-    queryKey: ["pass2Stats"],
-    queryFn: () => api.getPass2Stats(),
-    enabled: PASS2_ENABLED,
-    refetchInterval: 5000,
-  });
+  const run = useRun();
+  return {
+    ...run,
+    data: run.data ? derivePass2Stats(run.data) : undefined,
+  };
 }

@@ -1,7 +1,5 @@
 import { create } from "zustand";
 import { UserRole } from "@/types";
-import { switchUserRole } from "@/lib/auth";
-
 interface UIState {
   sidebarOpen: boolean;
   toggleSidebar: () => void;
@@ -48,10 +46,7 @@ export const useUIStore = create<UIState>((set) => ({
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
 
   userRole: "auditor",
-  setUserRole: (role) => {
-    switchUserRole(role);
-    set({ userRole: role });
-  },
+  setUserRole: (role) => set({ userRole: role }),
 
   searchQuery: "",
   setSearchQuery: (query) => set({ searchQuery: query }),

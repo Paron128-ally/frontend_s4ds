@@ -14,7 +14,7 @@ export default function VerdictBullets({ verdict, critique, pass2Score }: Verdic
   if (!critique && !verdict) {
     return (
       <div className="rounded-lg border border-gray-200 bg-white p-5 text-gray-400 font-mono text-xs">
-        Pass-2 deep review has not been synthesized for this candidate team yet.
+        Round 2 has not been scored for this team yet.
       </div>
     );
   }
@@ -168,7 +168,7 @@ export default function VerdictBullets({ verdict, critique, pass2Score }: Verdic
             </div>
             {pass2Score !== undefined && (
               <span className="rounded bg-emerald-950 px-2.5 py-1 text-xs font-mono font-bold text-emerald-300 border border-emerald-700">
-                Pass-2 Final Score: {pass2Score} / 10
+                Round 2 score: {pass2Score} / 10
               </span>
             )}
           </div>

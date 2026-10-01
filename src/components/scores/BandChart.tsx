@@ -36,21 +36,21 @@ export default function BandChart({ bands = defaultBands, scoreBuckets }: BandCh
       count: bands.reject,
       percentage: `${rejectPct}%`,
       color: "#ef4444",
-      action: "Terminates at Pass-1",
+      action: "Stops after Round 1",
     },
     {
       name: "BORDERLINE",
       count: bands.borderline,
       percentage: `${borderlinePct}%`,
       color: "#f59e0b",
-      action: "Promoted to Pass-2",
+      action: "Promoted to Round 2",
     },
     {
       name: "FAST TRACK",
       count: bands.fastTrack,
       percentage: `${fastTrackPct}%`,
       color: "#166534",
-      action: "Promoted to Pass-2",
+      action: "Promoted to Round 2",
     },
   ];
 
@@ -59,7 +59,7 @@ export default function BandChart({ bands = defaultBands, scoreBuckets }: BandCh
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-brand-100 pb-3">
         <div>
           <h3 className="text-xs uppercase tracking-wider text-brand-700 font-semibold">
-            Pass-1 Operational Band Distribution
+            Round 1 band distribution
           </h3>
           <p className="text-[11px] text-brand-400">
             {totalScored} teams scored across 3 operational tiers

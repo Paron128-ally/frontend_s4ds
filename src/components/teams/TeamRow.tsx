@@ -6,6 +6,7 @@ import { ArrowRight, AlertTriangle, CheckCircle2, ShieldAlert, GitBranch } from 
 import { Team } from "@/types";
 import TeamStatusBadge from "./TeamStatusBadge";
 import CompositeScore from "../scores/CompositeScore";
+import { useRunHref } from "@/hooks/useRunHref";
 import { cn } from "@/lib/utils";
 
 interface TeamRowProps {
@@ -13,6 +14,7 @@ interface TeamRowProps {
 }
 
 export default function TeamRow({ team }: TeamRowProps) {
+  const teamBase = useRunHref("team");
   const isShortlist = team.status === "SHORTLIST";
   const hasIntegrityFlags = team.integrityFlags && team.integrityFlags.length > 0;
   const isOverridden = team.overrideScore !== undefined || team.status === "OVERRIDE";
@@ -154,7 +156,7 @@ export default function TeamRow({ team }: TeamRowProps) {
       {/* Action */}
       <td className="py-3 px-3 text-right">
         <Link
-          href={`/team/${team.id}`}
+          href={`${teamBase}/${team.id}`}
           className="inline-flex items-center gap-1 rounded border border-gray-300 bg-gray-50/80 hover:bg-gray-600 px-2.5 py-1 text-[11px] font-sans font-medium text-gray-800 transition-colors"
         >
           <span>View Team</span>

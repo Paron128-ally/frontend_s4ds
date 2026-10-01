@@ -1,14 +1,8 @@
 /**
- * API contract types — the single source of truth for what the frontend sends
- * to / receives from the backend. Keep API_CONTRACT.md in sync with this file.
+ * UI-facing request and response shapes used by pages and hooks.
+ * Wire types for the FastAPI backend come from Orval (`src/api/generated`).
  */
-import type {
-  DisputeItem,
-  FreezeSummary,
-  Pass1Band,
-  RunState,
-  Team,
-} from "./index";
+import type { FreezeSummary, Pass1Band, Team } from "./index";
 
 // ---------- GET /teams -------------------------------------------------------
 
@@ -21,7 +15,7 @@ export interface TeamFilters {
   maxScore?: number;
   integrityOnly?: boolean;
   overriddenOnly?: boolean;
-  sortBy?: "rank" | "composite" | "p2Score" | "name" | "id";
+  sortBy?: "rank" | "composite" | "p2Score" | "final" | "name" | "id";
   sortOrder?: "asc" | "desc";
 }
 
@@ -116,23 +110,3 @@ export interface IngestResult {
   incompleteList: { id: string; name: string; reasons: string[] }[];
 }
 
-// ---------- The client every implementation (mock + HTTP) must satisfy --------
-
-export interface ApiClient {
-  getRun(): Promise<RunState>;
-  restartRun(): Promise<RunState>;
-
-  getTeams(filters?: TeamFilters): Promise<TeamsResponse>;
-  getTeam(id: string): Promise<Team | null>;
-  applyOverride(payload: OverridePayload): Promise<OverrideResponse>;
-
-  getPass1Stats(): Promise<Pass1Stats>;
-  getPass2Stats(): Promise<Pass2Stats>;
-
-  getDisputes(): Promise<DisputeItem[]>;
-
-  getFreezeStatus(): Promise<FreezeStatus>;
-  freezeShortlist(payload: FreezePayload): Promise<FreezeResponse>;
-
-  startIngest(dryRun?: boolean): Promise<IngestResult>;
-}

@@ -70,7 +70,7 @@ export default function ScoreBreakdown({ score, showReasons = true }: ScoreBreak
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-brand-100 pb-4">
         <div>
           <span className="text-[10px] uppercase tracking-widest text-brand-400 font-semibold">
-            Authoritative Pass-1 Evaluation
+            Round 1 evaluation
           </span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-3xl font-extrabold text-brand-950">

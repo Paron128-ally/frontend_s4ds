@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "mock:api": "tsx src/services/mock/server.ts"
+    "generate:api": "node scripts/fetch-openapi.mjs && orval"
   },
   "dependencies": {
     "@fontsource/poppins": "^5.3.0",
@@ -36,6 +36,7 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.5",
+    "orval": "^8.38.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
     "tsx": "^4.23.15",

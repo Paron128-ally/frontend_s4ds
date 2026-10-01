@@ -21,7 +21,7 @@ export default function LoginPage() {
   const handleSSOLogin = () => {
     setIsSubmitting(true);
     setTimeout(() => {
-      router.push("/dashboard");
+      router.push("/");
     }, 600);
   };
 
@@ -33,7 +33,7 @@ export default function LoginPage() {
       setMagicLinkSent(true);
       setIsSubmitting(false);
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push("/");
       }, 1200);
     }, 800);
   };

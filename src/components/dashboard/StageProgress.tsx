@@ -28,7 +28,7 @@ export default function StageProgress({ run }: StageProgressProps) {
     },
     {
       id: "pass1",
-      name: "2. Pass-1 Cheap Scoring",
+      name: "2. Round 1",
       percentage: p1Percent,
       detail: `${run.p1Completed} / ${run.completeTeams} scored (${run.p1Queued} queued) • 5 rubric dimensions`,
       status: p1Percent >= 100 ? "COMPLETED" : "RUNNING",
@@ -39,7 +39,7 @@ export default function StageProgress({ run }: StageProgressProps) {
     },
     {
       id: "pass2",
-      name: "3. Pass-2 Deep Review (Promoted Only)",
+      name: "3. Round 2",
       percentage: PASS2_ENABLED ? p2Percent : 0,
       detail: PASS2_ENABLED ? `${run.p2Completed ?? "—"} / ${run.p2Promoted ?? "—"} deep reviewed` : "Not started",
       status: PASS2_ENABLED && run.p2Completed === run.p2Promoted ? "COMPLETED" : "NOT STARTED",
@@ -66,7 +66,7 @@ export default function StageProgress({ run }: StageProgressProps) {
           Pipeline Staged Funnel Progress
         </h3>
         <span className="text-[11px] text-brand-400">
-          Pass-2: Not started
+          Round 2: Not started
         </span>
       </div>
 

@@ -204,7 +204,7 @@ export default function PipelineFlow({ run, pass1Stats, pass2Stats }: PipelineFl
         type: "stageNode",
         position: { x: 380, y: 340 },
         data: {
-          title: "Pass-1 Cheap Scorer",
+          title: "Round 1",
           subtitle: "5-dimension weighted rubric",
           status: p1Completed >= completeTeams && p1Queued === 0 ? "completed" : "running",
           jobs: pass1Stats ? `${pass1Stats.scoredCount} / ${pass1Stats.totalComplete} scored` : `${p1Completed} / ${completeTeams} scored`,
@@ -218,7 +218,7 @@ export default function PipelineFlow({ run, pass1Stats, pass2Stats }: PipelineFl
         position: { x: 120, y: 480 },
         data: {
           title: "REJECT",
-          subtitle: "Bottom tier terminates at Pass-1",
+          subtitle: "Bottom tier stops after Round 1",
           status: "completed",
           jobs: rejectCount === undefined ? "—" : `${rejectCount} teams rejected`,
           isReject: true,
@@ -229,8 +229,8 @@ export default function PipelineFlow({ run, pass1Stats, pass2Stats }: PipelineFl
         type: "stageNode",
         position: { x: 580, y: 480 },
         data: {
-          title: "Pass-2",
-          subtitle: "Pass-2 candidate pool",
+          title: "Round 2",
+          subtitle: "Promoted teams",
           status: PASS2_ENABLED ? "completed" : "idle",
           jobs: PASS2_ENABLED && pass2Stats ? `${pass2Stats.promotedTotal} teams promoted` : "Not started",
         },

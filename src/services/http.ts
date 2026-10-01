@@ -50,7 +50,7 @@ function authHeaders(): Record<string, string> {
 function buildUrl(path: string, query?: RequestOptions["query"]): string {
   if (API_BASE_URL === undefined) {
     throw new ApiError(
-      "NEXT_PUBLIC_API_BASE_URL is not set. Add it to .env.local, or set NEXT_PUBLIC_USE_MOCKS=true.",
+      "NEXT_PUBLIC_API_BASE_URL is not set. Add it to .env.local (see .env.example).",
       0,
       path
     );

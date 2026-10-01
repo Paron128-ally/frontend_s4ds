@@ -94,6 +94,7 @@ export type UserRole = "ops" | "auditor" | "admin";
 
 export interface RunState {
   id: string;
+  name?: string;
   status: RunStatus;
   startedAt: string;
   elapsedSeconds: number;

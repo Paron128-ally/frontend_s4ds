@@ -2,24 +2,17 @@
 
 import React from "react";
 import Link from "next/link";
-import { 
-  Play, 
-  Pause, 
-  RotateCw, 
-  ArrowRight, 
-  Cpu, 
-  Clock, 
-  DollarSign, 
-  AlertCircle,
+import {
+  ArrowRight,
+  Clock,
+  DollarSign,
   Lock,
   Layers,
-  CheckCircle2
 } from "lucide-react";
+import { useRunHref } from "@/hooks/useRunHref";
 import { RunState } from "@/types";
 import { formatCurrency, formatDuration } from "@/lib/utils";
-import { useRestartRun } from "@/hooks/useRuns";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
@@ -28,7 +21,9 @@ interface RunStatusBannerProps {
 }
 
 export default function RunStatusBanner({ run }: RunStatusBannerProps) {
-  const restartMutation = useRestartRun();
+  const round2Href = useRunHref("pass2");
+  const pass1Href = useRunHref("pass1");
+  const pass2Href = useRunHref("pass2");
   const isFrozen = run.status === "FROZEN";
   const isRunning = run.status === "RUNNING";
 
@@ -68,7 +63,7 @@ export default function RunStatusBanner({ run }: RunStatusBannerProps) {
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-brand-700 pt-1">
             <div className="flex items-center gap-1.5">
-              <span className="text-brand-400">Pass-1 Complete:</span>
+              <span className="text-brand-400">Round 1 Complete:</span>
               <span className="font-bold text-brand-950">
                 {run.p1Completed} / {run.completeTeams}
               </span>
@@ -79,7 +74,7 @@ export default function RunStatusBanner({ run }: RunStatusBannerProps) {
             <Progress value={Math.round((run.p1Completed / run.completeTeams) * 100)} className="h-2 w-24" />
 
             <div className="flex items-center gap-1.5">
-              <span className="text-brand-400">Pass-2 Deep:</span>
+              <span className="text-brand-400">Round 2:</span>
               <span className="font-bold text-brand-950">
                 {run.p2Completed} / {run.p2Promoted}
               </span>
@@ -109,35 +104,34 @@ export default function RunStatusBanner({ run }: RunStatusBannerProps) {
         {/* Right Quick Operation Actions */}
         <div className="flex flex-wrap items-center gap-2">
           {isFrozen ? (
-            <Button
-              onClick={() => restartMutation.mutate()}
-              disabled={restartMutation.isPending}
-              className="flex items-center gap-1.5 rounded-xl bg-brand-800 px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-brand-700"
+            <Link
+              href={round2Href}
+              className="flex items-center gap-1.5 rounded-xl bg-brand-800 hover:bg-brand-700 px-3.5 py-1.5 text-xs font-semibold text-white transition-colors shadow-sm"
             >
-              <RotateCw className="h-3.5 w-3.5" />
-              Reset & Rerun Pipeline
-            </Button>
+              <span>View frozen Round 2 ({run.shortlistSize})</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           ) : (
             <>
               <Link
-                href="/pass1"
+                href={pass1Href}
                 className="flex items-center gap-1.5 rounded-xl border border-brand-200 bg-brand-50 hover:bg-brand-100 px-3 py-1.5 text-xs font-medium text-brand-800 transition-colors"
               >
-                <span>Monitor Pass-1</span>
+                <span>Monitor Round 1</span>
                 <ArrowRight className="h-3 w-3 text-brand-400" />
               </Link>
               <Link
-                href="/pass2"
+                href={pass2Href}
                 className="flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 text-xs font-medium text-blue-700 transition-colors"
               >
                 <Layers className="h-3 w-3" />
-                <span>Monitor Pass-2</span>
+                <span>Monitor Round 2</span>
               </Link>
               <Link
-                href="/shortlist"
+                href={round2Href}
                 className="flex items-center gap-1.5 rounded-xl bg-brand-800 hover:bg-brand-700 px-3.5 py-1.5 text-xs font-semibold text-white transition-colors shadow-sm"
               >
-                <span>View Shortlist ({run.shortlistSize})</span>
+                <span>View Round 2 ({run.shortlistSize})</span>
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </>

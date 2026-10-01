@@ -1,0 +1,23 @@
+{
+  "teams": [
+    {
+      "team_id": "curl-t1",
+      "track": "new_idea",
+      "team_name": "Campus Queue",
+      "idea_text": "A campus dining hall wait-time board that aggregates student-reported line lengths and shows the best time to eat in the next hour."
+    },
+    {
+      "team_id": "curl-t2",
+      "track": "existing_project",
+      "team_name": "RailDash",
+      "idea_text": "Live Mumbai local train crowding map using open timetable APIs and simple heuristics for peak-hour alerts.",
+      "github_url": "https://github.com/example/raildash"
+    },
+    {
+      "team_id": "curl-t3",
+      "track": "new_idea",
+      "team_name": "PhishGuard",
+      "idea_text": "Browser extension that flags suspicious form fields before users paste secrets into public LLM chat UIs."
+    }
+  ]
+}
