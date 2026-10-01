@@ -25,8 +25,8 @@ interface UIState {
   setMinScore: (val: number | undefined) => void;
   maxScore: number | undefined;
   setMaxScore: (val: number | undefined) => void;
-  sortBy: "rank" | "composite" | "p2Score" | "name" | "id";
-  setSortBy: (sort: "rank" | "composite" | "p2Score" | "name" | "id") => void;
+  sortBy: "rank" | "composite" | "p2Score" | "final" | "name" | "id";
+  setSortBy: (sort: "rank" | "composite" | "p2Score" | "final" | "name" | "id") => void;
   sortOrder: "asc" | "desc";
   setSortOrder: (order: "asc" | "desc") => void;
   resetFilters: () => void;
